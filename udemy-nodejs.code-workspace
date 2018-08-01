@@ -1,0 +1,25 @@
+{
+	"folders": [
+		{
+			"path": "notes"
+		},
+		{
+			"path": "weather"
+		},
+		{
+			"path": "web-server"
+		},
+		{
+			"path": "testing"
+		},
+		{
+			"path": "todo-api"
+		},
+		{
+			"path": "chat-app"
+		}
+	],
+	"settings": {
+		"editor.formatOnSave": true
+	}
+}
