@@ -9,9 +9,23 @@ const io = socketio(server)
 io.on('connection', socket => {
   console.log('Client connected')
 
+  socket.emit('newMessage', {
+    from: 'Admin',
+    text: 'Welcome',
+    createdAt: Date.now(),
+  })
+  socket.broadcast.emit('newMessage', {
+    from: 'Admin',
+    text: 'New user joined',
+    createdAt: Date.now(),
+  })
+
   socket.on('createMessage', message => {
-    message.createdAt = Date.now()
-    io.emit('newMessage', message)
+    io.emit('newMessage', {
+      from: message.from,
+      text: message.text,
+      createdAt: Date.now(),
+    })
   })
 
   socket.on('disconnect', () => {

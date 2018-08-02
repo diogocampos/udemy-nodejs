@@ -5,7 +5,9 @@ socket.on('connect', () => {
 })
 
 socket.on('newMessage', message => {
-  console.log('Message:', message)
+  console.log(
+    `${new Date(message.createdAt)} - ${message.from}: ${message.text}`
+  )
 })
 
 socket.on('disconnect', () => {
