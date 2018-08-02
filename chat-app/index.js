@@ -7,10 +7,15 @@ const server = http.createServer(app)
 const io = socketio(server)
 
 io.on('connection', socket => {
-  console.log('Connection')
+  console.log('Client connected')
+
+  socket.on('createMessage', message => {
+    message.createdAt = Date.now()
+    io.emit('newMessage', message)
+  })
 
   socket.on('disconnect', () => {
-    console.log('Disconnected')
+    console.log('Client disconnected')
   })
 })
 
