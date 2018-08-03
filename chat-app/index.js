@@ -13,8 +13,9 @@ io.on('connection', socket => {
   socket.emit('newMessage', createMessage('Admin', 'Welcome'))
   socket.broadcast.emit('newMessage', createMessage('Admin', 'New user joined'))
 
-  socket.on('createMessage', message => {
+  socket.on('createMessage', (message, ack) => {
     io.emit('newMessage', createMessage(message.from, message.text))
+    ack('Sent')
   })
 
   socket.on('disconnect', () => {

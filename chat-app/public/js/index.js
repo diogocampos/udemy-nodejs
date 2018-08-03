@@ -13,3 +13,7 @@ socket.on('newMessage', message => {
 socket.on('disconnect', () => {
   console.log('Disconnected from server')
 })
+
+socket.emit('createMessage', { from: 'Frank', text: 'Hi' }, ack => {
+  console.log('Ack:', ack)
+})
