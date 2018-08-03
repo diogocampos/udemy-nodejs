@@ -10,11 +10,14 @@ const io = socketio(server)
 io.on('connection', socket => {
   console.log('Client connected')
 
-  socket.emit('newMessage', createMessage('Admin', 'Welcome'))
-  socket.broadcast.emit('newMessage', createMessage('Admin', 'New user joined'))
+  socket.emit('new-message', createMessage('Admin', 'Welcome'))
+  socket.broadcast.emit(
+    'new-message',
+    createMessage('Admin', 'New user joined')
+  )
 
-  socket.on('createMessage', (message, ack) => {
-    io.emit('newMessage', createMessage(message.from, message.text))
+  socket.on('send-message', (message, ack) => {
+    io.emit('new-message', createMessage(message.from, message.text))
     ack('Sent')
   })
 
