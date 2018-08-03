@@ -12,13 +12,27 @@ socket.on('disconnect', () => {
 
 const $messageList = $('#message-list')
 
-socket.on('new-message', message => {
+socket.on('text-message', message => {
   $messageList.append(
-    $('<li></li>').text(
-      `${new Date(message.createdAt)} - ${message.from}: ${message.text}`
-    )
+    $('<li></li>').text(`${messagePrefix(message)} ${message.text}`)
   )
 })
+
+socket.on('location-message', message => {
+  $messageList.append(
+    $('<li></li>')
+      .text(messagePrefix(message))
+      .append(
+        $('<a target="_blank"></a>')
+          .text('My current location')
+          .attr('href', message.url)
+      )
+  )
+})
+
+function messagePrefix(message) {
+  return `${new Date(message.createdAt)} - ${message.from}: `
+}
 
 // sending messages
 
@@ -26,6 +40,7 @@ const $messageInput = $('input[name=message]')
 
 $('#message-form').on('submit', e => {
   e.preventDefault()
+
   const text = $messageInput.val()
   if (!text) return
 

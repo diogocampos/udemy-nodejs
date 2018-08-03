@@ -2,7 +2,7 @@ const http = require('http')
 const socketio = require('socket.io')
 
 const app = require('./server/app')
-const { createMessage } = require('./server/utils/message')
+const { locationMessage, textMessage } = require('./server/utils/messages')
 
 const server = http.createServer(app)
 const io = socketio(server)
@@ -10,22 +10,16 @@ const io = socketio(server)
 io.on('connection', socket => {
   console.log('Client connected')
 
-  socket.emit('new-message', createMessage('Admin', 'Welcome'))
-  socket.broadcast.emit(
-    'new-message',
-    createMessage('Admin', 'New user joined')
-  )
+  socket.emit('text-message', textMessage('Admin', 'Welcome'))
+  socket.broadcast.emit('text-message', textMessage('Admin', 'New user joined'))
 
   socket.on('send-message', (message, ack) => {
-    io.emit('new-message', createMessage(message.from, message.text))
+    io.emit('text-message', textMessage(message.from, message.text))
     ack('Sent')
   })
 
   socket.on('send-location', coords => {
-    io.emit(
-      'new-message',
-      createMessage('Admin', `${coords.latitude}, ${coords.longitude}`)
-    )
+    io.emit('location-message', locationMessage('User', coords))
   })
 
   socket.on('disconnect', () => {
