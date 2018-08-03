@@ -21,6 +21,13 @@ io.on('connection', socket => {
     ack('Sent')
   })
 
+  socket.on('send-location', coords => {
+    io.emit(
+      'new-message',
+      createMessage('Admin', `${coords.latitude}, ${coords.longitude}`)
+    )
+  })
+
   socket.on('disconnect', () => {
     console.log('Client disconnected')
   })
