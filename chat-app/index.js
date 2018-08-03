@@ -2,6 +2,7 @@ const http = require('http')
 const socketio = require('socket.io')
 
 const app = require('./server/app')
+const { createMessage } = require('./server/utils/message')
 
 const server = http.createServer(app)
 const io = socketio(server)
@@ -9,23 +10,11 @@ const io = socketio(server)
 io.on('connection', socket => {
   console.log('Client connected')
 
-  socket.emit('newMessage', {
-    from: 'Admin',
-    text: 'Welcome',
-    createdAt: Date.now(),
-  })
-  socket.broadcast.emit('newMessage', {
-    from: 'Admin',
-    text: 'New user joined',
-    createdAt: Date.now(),
-  })
+  socket.emit('newMessage', createMessage('Admin', 'Welcome'))
+  socket.broadcast.emit('newMessage', createMessage('Admin', 'New user joined'))
 
   socket.on('createMessage', message => {
-    io.emit('newMessage', {
-      from: message.from,
-      text: message.text,
-      createdAt: Date.now(),
-    })
+    io.emit('newMessage', createMessage(message.from, message.text))
   })
 
   socket.on('disconnect', () => {
