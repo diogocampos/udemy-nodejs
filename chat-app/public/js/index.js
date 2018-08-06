@@ -59,14 +59,18 @@ $locationButton.on('click', e => {
     return alert('This browser does not support geolocation.')
   }
 
+  $locationButton.attr('disabled', 'disabled').text('Sending Location…')
+
   navigator.geolocation.getCurrentPosition(
     position => {
+      $locationButton.removeAttr('disabled').text('Send Location')
       socket.emit('send-location', {
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
       })
     },
     err => {
+      $locationButton.removeAttr('disabled').text('Send Location')
       if (err.code === 1) return console.error('User denied access to location')
       alert(`Unable to get location: ${err.message}`)
     }
