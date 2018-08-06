@@ -31,7 +31,8 @@ socket.on('location-message', message => {
 })
 
 function messagePrefix(message) {
-  return `${new Date(message.createdAt)} - ${message.from}: `
+  const time = moment(message.createdAt)
+  return `${time.format('H:mm')} - ${message.from}: `
 }
 
 // sending messages
