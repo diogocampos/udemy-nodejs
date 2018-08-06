@@ -10,29 +10,20 @@ socket.on('disconnect', () => {
 
 // receiving messages
 
+socket.on('text-message', renderMessage)
+socket.on('location-message', renderMessage)
+
 const $messageList = $('#message-list')
+const messageTemplate = $('#message-template').html()
+Mustache.parse(messageTemplate)
 
-socket.on('text-message', message => {
+function renderMessage(message) {
   $messageList.append(
-    $('<li></li>').text(`${messagePrefix(message)} ${message.text}`)
+    Mustache.render(messageTemplate, {
+      formattedTime: moment(message.createdAt).format('H:mm'),
+      ...message,
+    })
   )
-})
-
-socket.on('location-message', message => {
-  $messageList.append(
-    $('<li></li>')
-      .text(messagePrefix(message))
-      .append(
-        $('<a target="_blank"></a>')
-          .text('My current location')
-          .attr('href', message.url)
-      )
-  )
-})
-
-function messagePrefix(message) {
-  const time = moment(message.createdAt)
-  return `${time.format('H:mm')} - ${message.from}: `
 }
 
 // sending messages
