@@ -1,4 +1,3 @@
-const { objectContaining, stringMatching } = expect
 const { pick } = require('lodash')
 const request = require('supertest')
 
@@ -6,6 +5,8 @@ const app = require('../app')
 const User = require('../db/User')
 const fixtures = require('./fixtures')
 const { pojo, requiresAuthentication } = require('./helpers')
+
+const { objectContaining, stringMatching } = expect
 
 const OBJECT_ID = /^[0-9a-f]{24}$/
 const BCRYPT_HASH = /^\$2a\$10\$.{53}$/

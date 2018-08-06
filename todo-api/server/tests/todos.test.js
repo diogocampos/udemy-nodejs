@@ -1,10 +1,11 @@
-const { any, objectContaining } = expect
 const request = require('supertest')
 
 const app = require('../app')
 const Todo = require('../db/Todo')
 const fixtures = require('./fixtures')
 const { pojo, requiresAuthentication, validatesId } = require('./helpers')
+
+const { any, objectContaining } = expect
 
 beforeAll(fixtures.users.populate)
 beforeEach(fixtures.todos.populate)

@@ -16,5 +16,4 @@ const env = {
 
 const NODE_ENV = (process.env.NODE_ENV =
   process.env.NODE_ENV || /* istanbul ignore next */ 'development')
-
-Object.assign(process.env, env[NODE_ENV] || /* istanbul ignore next */ {})
+Object.assign(process.env, env[NODE_ENV])
