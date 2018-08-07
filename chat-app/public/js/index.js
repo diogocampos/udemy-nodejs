@@ -24,6 +24,21 @@ function renderMessage(message) {
       ...message,
     })
   )
+  scrollToBottom()
+}
+
+function scrollToBottom() {
+  const clientHeight = $messageList.prop('clientHeight')
+  const scrollHeight = $messageList.prop('scrollHeight')
+  const scrollTop = $messageList.prop('scrollTop')
+
+  const $lastMessage = $messageList.children('li:last-child')
+  const lastHeight = $lastMessage.innerHeight()
+  const prevHeight = $lastMessage.prev().innerHeight()
+
+  if (scrollTop + clientHeight + lastHeight + prevHeight >= scrollHeight) {
+    $messageList.scrollTop(scrollHeight)
+  }
 }
 
 // sending messages
