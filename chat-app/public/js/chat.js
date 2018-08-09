@@ -70,27 +70,20 @@ $('#message-form').on('submit', e => {
 
 const $locationButton = $('#send-location')
 
-$locationButton.on('click', e => {
-  if (!navigator.geolocation) {
-    return alert('This browser does not support geolocation.')
-  }
-
+$locationButton.on('click', async e => {
   $locationButton.attr('disabled', 'disabled').text('Sending Location…')
-
-  navigator.geolocation.getCurrentPosition(
-    position => {
-      $locationButton.removeAttr('disabled').text('Send Location')
-      socket.emit('send-location', {
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
-      })
-    },
-    err => {
-      $locationButton.removeAttr('disabled').text('Send Location')
-      if (err.code === 1) return console.error('User denied access to location')
-      alert(`Unable to get location: ${err.message}`)
-    }
-  )
+  try {
+    const position = await getCurrentPosition()
+    socket.emit('send-location', {
+      latitude: position.coords.latitude,
+      longitude: position.coords.longitude,
+    })
+  } catch (err) {
+    if (err.code === 1) return console.error('User denied access to location')
+    alert(err.message)
+  } finally {
+    $locationButton.removeAttr('disabled').text('Send Location')
+  }
 })
 
 // people
@@ -100,3 +93,14 @@ const $userList = $('#users')
 socket.on('update-user-list', names => {
   $userList.html(names.map(name => $('<li>').text(name)))
 })
+
+//
+
+function getCurrentPosition(options) {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) {
+      throw new Error('This browser does not support geolocation.')
+    }
+    navigator.geolocation.getCurrentPosition(resolve, reject, options)
+  })
+}
