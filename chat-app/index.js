@@ -11,8 +11,6 @@ const io = socketio(server)
 io.on('connection', socket => {
   console.log('Client connected')
 
-  socket.emit('text-message', textMessage('Admin', 'Welcome'))
-  socket.broadcast.emit('text-message', textMessage('Admin', 'New user joined'))
   socket.on('join', (params, ack) => {
     try {
       params = sanitizeJoinRequest(params)
@@ -20,6 +18,16 @@ io.on('connection', socket => {
     } catch (err) {
       return ack({ message: err.message })
     }
+
+    const { name, room } = params
+    socket.join(room)
+    socket.emit('text-message', textMessage('Admin', `Welcome to ${room}!`))
+    socket.broadcast
+      .to(room)
+      .emit(
+        'text-message',
+        textMessage('Admin', `${name} has joined the room.`)
+      )
   })
 
   socket.on('send-message', (message, ack) => {
