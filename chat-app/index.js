@@ -4,9 +4,12 @@ const socketio = require('socket.io')
 const app = require('./server/app')
 const { locationMessage, textMessage } = require('./server/utils/messages')
 const { sanitizeJoinRequest } = require('./server/utils/validation')
+const { Sessions } = require('./server/utils/sessions')
 
 const server = http.createServer(app)
 const io = socketio(server)
+
+const sessions = new Sessions()
 
 io.on('connection', socket => {
   console.log('Client connected')
@@ -20,7 +23,9 @@ io.on('connection', socket => {
     }
 
     const { name, room } = params
+    sessions.addSession({ id: socket.id, name, room })
     socket.join(room)
+
     socket.emit('text-message', textMessage('Admin', `Welcome to ${room}!`))
     socket.broadcast
       .to(room)
@@ -40,7 +45,11 @@ io.on('connection', socket => {
   })
 
   socket.on('disconnect', () => {
-    console.log('Client disconnected')
+    const { name, room } = sessions.removeSession(socket.id)
+    io.to(room).emit(
+      'text-message',
+      textMessage('Admin', `${name} has left the room.`)
+    )
   })
 })
 
