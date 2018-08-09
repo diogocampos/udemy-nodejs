@@ -92,3 +92,11 @@ $locationButton.on('click', e => {
     }
   )
 })
+
+// people
+
+const $userList = $('#users')
+
+socket.on('update-user-list', names => {
+  $userList.html(names.map(name => $('<li>').text(name)))
+})

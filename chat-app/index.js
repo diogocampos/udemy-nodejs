@@ -26,7 +26,10 @@ io.on('connection', socket => {
     sessions.addSession({ id: socket.id, name, room })
     socket.join(room)
 
+    io.to(room).emit('update-user-list', sessions.getNames(room))
+
     socket.emit('text-message', textMessage('Admin', `Welcome to ${room}!`))
+
     socket.broadcast
       .to(room)
       .emit(
@@ -50,6 +53,7 @@ io.on('connection', socket => {
       'text-message',
       textMessage('Admin', `${name} has left the room.`)
     )
+    io.to(room).emit('update-user-list', sessions.getNames(room))
   })
 })
 
