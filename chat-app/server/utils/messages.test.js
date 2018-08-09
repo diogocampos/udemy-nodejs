@@ -2,6 +2,8 @@ const { locationMessage, textMessage } = require('./messages')
 
 const { any } = expect
 
+beforeEach(expect.hasAssertions)
+
 describe('locationMessage', () => {
   it('creates a location message object', () => {
     const from = 'Alice'

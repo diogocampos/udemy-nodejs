@@ -3,6 +3,7 @@ const socketio = require('socket.io')
 
 const app = require('./server/app')
 const { locationMessage, textMessage } = require('./server/utils/messages')
+const { sanitizeJoinRequest } = require('./server/utils/validation')
 
 const server = http.createServer(app)
 const io = socketio(server)
@@ -12,10 +13,18 @@ io.on('connection', socket => {
 
   socket.emit('text-message', textMessage('Admin', 'Welcome'))
   socket.broadcast.emit('text-message', textMessage('Admin', 'New user joined'))
+  socket.on('join', (params, ack) => {
+    try {
+      params = sanitizeJoinRequest(params)
+      ack()
+    } catch (err) {
+      return ack({ message: err.message })
+    }
+  })
 
   socket.on('send-message', (message, ack) => {
     io.emit('text-message', textMessage(message.from, message.text))
-    ack('Sent')
+    ack()
   })
 
   socket.on('send-location', coords => {

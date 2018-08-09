@@ -1,7 +1,16 @@
 const socket = io()
 
+const params = new URL(window.location).searchParams
+const name = params.get('name')
+const room = params.get('room')
+
 socket.on('connect', () => {
-  console.log('Connected to server')
+  socket.emit('join', { name, room }, err => {
+    if (err) {
+      alert(err.message)
+      history.go(-1)
+    }
+  })
 })
 
 socket.on('disconnect', () => {
@@ -51,9 +60,9 @@ $('#message-form').on('submit', e => {
   const text = $messageInput.val()
   if (!text) return
 
-  socket.emit('send-message', { from: 'User', text }, ack => {
+  socket.emit('send-message', { from: name, text }, err => {
+    if (err) return alert(err.message)
     $messageInput.val('')
-    console.log('Ack:', ack)
   })
 })
 
