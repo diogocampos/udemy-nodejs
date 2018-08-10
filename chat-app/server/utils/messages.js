@@ -1,6 +1,6 @@
 exports.textMessage = (from, text) => ({
   from,
-  text,
+  text: `${text}`,
   createdAt: Date.now(),
 })
 

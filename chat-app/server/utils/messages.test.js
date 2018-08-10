@@ -27,4 +27,9 @@ describe('textMessage', () => {
 
     expect(message).toEqual({ from, text, createdAt: any(Number) })
   })
+
+  it('converts `text` argument to a string', () => {
+    const message = textMessage('Arthur', 42)
+    expect(message).toMatchObject({ text: '42' })
+  })
 })
