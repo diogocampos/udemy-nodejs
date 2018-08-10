@@ -69,7 +69,7 @@ $('#message-form').on('submit', e => {
   const text = $messageInput.val()
   if (!text) return
 
-  socket.emit('send-message', { from: name, text }, err => {
+  socket.emit('send-message', { text }, err => {
     if (err) return alert(err.message)
     $messageInput.val('')
   })
@@ -83,10 +83,14 @@ $locationButton.on('click', async e => {
   $locationButton.attr('disabled', 'disabled').text('Sending Location…')
   try {
     const position = await getCurrentPosition()
-    socket.emit('send-location', {
-      latitude: position.coords.latitude,
-      longitude: position.coords.longitude,
-    })
+    socket.emit(
+      'send-location',
+      {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      },
+      err => err && alert(err.message)
+    )
   } catch (err) {
     if (err.code === 1) return console.error('User denied access to location')
     alert(err.message)

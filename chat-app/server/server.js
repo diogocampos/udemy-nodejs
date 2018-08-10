@@ -15,12 +15,9 @@ const io = socketio(server)
 const sessions = new Sessions()
 
 io.on('connection', socket => {
-  console.log('Client connected')
-
   socket.on('join', (params, ack) => {
     try {
       params = sanitizeJoinRequest(params)
-      ack()
     } catch (err) {
       return ack({ message: err.message })
     }
@@ -39,24 +36,43 @@ io.on('connection', socket => {
         'text-message',
         textMessage('Admin', `${name} has joined the room.`)
       )
-  })
-
-  socket.on('send-message', (message, ack) => {
-    io.emit('text-message', textMessage(message.from, message.text))
     ack()
   })
 
-  socket.on('send-location', coords => {
-    io.emit('location-message', locationMessage('User', coords))
+  socket.on('send-message', (message, ack) => {
+    const session = sessions.getSession(socket.id)
+    if (!session) return ack({ message: 'Invalid session' })
+
+    io.to(session.room).emit(
+      'text-message',
+      textMessage(session.name, message.text)
+    )
+    ack()
+  })
+
+  socket.on('send-location', (coords, ack) => {
+    const session = sessions.getSession(socket.id)
+    if (!session) return ack({ message: 'Invalid session' })
+
+    io.to(session.room).emit(
+      'location-message',
+      locationMessage(session.name, coords)
+    )
+    ack()
   })
 
   socket.on('disconnect', () => {
-    const { name, room } = sessions.removeSession(socket.id)
-    io.to(room).emit(
+    const session = sessions.removeSession(socket.id)
+    if (!session) return
+
+    io.to(session.room).emit(
       'text-message',
-      textMessage('Admin', `${name} has left the room.`)
+      textMessage('Admin', `${session.name} has left the room.`)
     )
-    io.to(room).emit('update-user-list', sessions.getNames(room))
+    io.to(session.room).emit(
+      'update-user-list',
+      sessions.getNames(session.room)
+    )
   })
 })
 
