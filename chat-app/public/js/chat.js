@@ -18,14 +18,22 @@ socket.on('disconnect', () => {
   console.log('Disconnected from server')
 })
 
-// receiving messages
+// Updating list of people
 
-socket.on('text-message', renderMessage)
-socket.on('location-message', renderMessage)
+const $userList = $('#users')
+
+socket.on('update-user-list', names => {
+  $userList.html(names.map(name => $('<li>').text(name)))
+})
+
+// Receiving messages
 
 const $messageList = $('#message-list')
 const messageTemplate = $('#message-template').html()
 Mustache.parse(messageTemplate)
+
+socket.on('text-message', renderMessage)
+socket.on('location-message', renderMessage)
 
 function renderMessage(message) {
   $messageList.append(
@@ -51,7 +59,7 @@ function scrollToBottom() {
   }
 }
 
-// sending messages
+// Sending messages
 
 const $messageInput = $('input[name=message]')
 
@@ -67,7 +75,7 @@ $('#message-form').on('submit', e => {
   })
 })
 
-// location
+// Sending location
 
 const $locationButton = $('#send-location')
 
@@ -86,16 +94,6 @@ $locationButton.on('click', async e => {
     $locationButton.removeAttr('disabled').text('Send Location')
   }
 })
-
-// people
-
-const $userList = $('#users')
-
-socket.on('update-user-list', names => {
-  $userList.html(names.map(name => $('<li>').text(name)))
-})
-
-//
 
 function getCurrentPosition(options) {
   return new Promise((resolve, reject) => {
