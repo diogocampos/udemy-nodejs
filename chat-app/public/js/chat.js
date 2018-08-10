@@ -10,6 +10,7 @@ socket.on('connect', () => {
       alert(err.message)
       history.go(-1)
     }
+    document.title = `${room} | ${document.title}`
   })
 })
 
