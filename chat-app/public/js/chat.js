@@ -42,20 +42,20 @@ function renderMessage(message) {
       ...message,
     })
   )
-  scrollToBottom()
+  scrollToBottom($messageList)
 }
 
-function scrollToBottom() {
-  const clientHeight = $messageList.prop('clientHeight')
-  const scrollHeight = $messageList.prop('scrollHeight')
-  const scrollTop = $messageList.prop('scrollTop')
+function scrollToBottom($list) {
+  const clientHeight = $list.prop('clientHeight')
+  const scrollHeight = $list.prop('scrollHeight')
+  const scrollTop = $list.prop('scrollTop')
 
-  const $lastMessage = $messageList.children('li:last-child')
-  const lastHeight = $lastMessage.innerHeight()
-  const prevHeight = $lastMessage.prev().innerHeight()
+  const $lastItem = $list.children('li:last-child')
+  const lastHeight = $lastItem.innerHeight()
+  const prevHeight = $lastItem.prev().innerHeight()
 
   if (scrollTop + clientHeight + lastHeight + prevHeight >= scrollHeight) {
-    $messageList.scrollTop(scrollHeight)
+    $list.scrollTop(scrollHeight)
   }
 }
 
