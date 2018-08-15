@@ -12,10 +12,11 @@ function sendStatus(code) {
 }
 
 exports.wrap = asyncHandler => {
-  return (req, res, next) => {
-    asyncHandler(req, res, next).catch(err => {
-      /* istanbul ignore next */
+  return async (req, res, next) => {
+    try {
+      await asyncHandler(req, res, next)
+    } catch (err) {
       next(err || new Error(`Promise rejected with: ${err}`))
-    })
+    }
   }
 }
