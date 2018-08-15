@@ -17,6 +17,9 @@
 		},
 		{
 			"path": "chat-app"
+		},
+		{
+			"path": "async-await"
 		}
 	],
 	"settings": {
