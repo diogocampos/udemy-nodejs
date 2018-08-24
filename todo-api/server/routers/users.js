@@ -25,15 +25,10 @@ router.get('/me', [
 
 router.post('/', [
   wrap(async (req, res) => {
-    try {
-      const { email, password } = req.body
-      const user = await new User({ email, password }).save()
-      const token = await user.generateAuthToken()
-      res.header('X-Auth', token).json({ user })
-    } catch (err) {
-      if (err.code === 11000) return res.sendStatus(400) // email is in use
-      throw err
-    }
+    const { email, password } = req.body
+    const user = await new User({ email, password }).save()
+    const token = await user.generateAuthToken()
+    res.header('X-Auth', token).json({ user })
   }),
   catchValidationError,
 ])

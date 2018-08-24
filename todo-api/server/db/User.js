@@ -1,9 +1,8 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
+const uniqueValidator = require('mongoose-unique-validator')
 const isEmail = require('validator/lib/isEmail')
-
-// TODO: use https://www.npmjs.com/package/mongoose-unique-validator
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -34,6 +33,8 @@ const userSchema = new mongoose.Schema({
     },
   ],
 })
+
+userSchema.plugin(uniqueValidator)
 
 userSchema.statics.findByCredentials = async function(email, password) {
   const User = this

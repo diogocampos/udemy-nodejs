@@ -78,8 +78,12 @@ describe('POST /users', () => {
     })
 
     it('checks if email is already in use', async () => {
-      const body = { email: fixtures.users[0].email, password: '12345678' }
-      await req(body).expect(400, 'Bad Request')
+      const body = {
+        email: fixtures.users[0].email.toUpperCase(),
+        password: '12345678',
+      }
+      const res = await req(body).expect(400)
+      expect(res.body.errors.email).toBeDefined()
     })
   })
 })
