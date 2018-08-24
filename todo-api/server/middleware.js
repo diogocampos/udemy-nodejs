@@ -22,3 +22,8 @@ exports.wrap = asyncHandler => {
     }
   }
 }
+
+exports.handleError = (err, req, res, next) => {
+  if (process.env.NODE_ENV === 'development') console.error(err)
+  res.sendStatus(500)
+}

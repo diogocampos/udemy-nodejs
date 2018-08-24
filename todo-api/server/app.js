@@ -3,7 +3,7 @@ const express = require('express')
 require('./config')
 require('./db/connect')
 
-const { notFound, wrap } = require('./middleware')
+const { handleError, notFound, wrap } = require('./middleware')
 const users = require('./routers/users')
 const todos = require('./routers/todos')
 
@@ -21,10 +21,6 @@ if (process.env.NODE_ENV === 'test') {
 }
 
 app.use(notFound)
-
-app.use((err, req, res, next) => {
-  //console.error(err)
-  res.sendStatus(500)
-})
+app.use(handleError)
 
 module.exports = app
