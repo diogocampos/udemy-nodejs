@@ -1,7 +1,7 @@
 const express = require('express')
 
 const Todo = require('../db/Todo')
-const { handleValidationError, notFound, wrap } = require('../middleware')
+const { handleBadRequest, notFound, wrap } = require('../middleware')
 const { authenticate } = require('./users')
 
 const router = express.Router()
@@ -38,7 +38,7 @@ router.post('/', authenticate, [
     const todo = await new Todo({ title, _creator: user._id }).save()
     res.json({ todo })
   }),
-  handleValidationError,
+  handleBadRequest,
 ])
 
 router.patch('/:id', authenticate, [
@@ -63,6 +63,7 @@ router.patch('/:id', authenticate, [
     )
     todo ? res.json({ todo }) : notFound(req, res)
   }),
+  handleBadRequest,
 ])
 
 router.delete('/:id', authenticate, [

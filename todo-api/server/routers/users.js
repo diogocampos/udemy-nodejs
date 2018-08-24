@@ -1,7 +1,7 @@
 const express = require('express')
 
 const User = require('../db/User')
-const { handleValidationError, unauthorized, wrap } = require('../middleware')
+const { handleBadRequest, unauthorized, wrap } = require('../middleware')
 
 const router = express.Router()
 
@@ -30,7 +30,7 @@ router.post('/', [
     const token = await user.generateAuthToken()
     res.header('X-Auth', token).json({ user })
   }),
-  handleValidationError,
+  handleBadRequest,
 ])
 
 router.post('/login', [
@@ -42,6 +42,7 @@ router.post('/login', [
     const token = await user.generateAuthToken()
     res.header('X-Auth', token).json({ user })
   }),
+  handleBadRequest,
 ])
 
 router.delete('/me/token', [
