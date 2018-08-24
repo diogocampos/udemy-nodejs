@@ -1,7 +1,7 @@
 const express = require('express')
 
 const User = require('../db/User')
-const { catchValidationError, unauthorized, wrap } = require('../middleware')
+const { handleValidationError, unauthorized, wrap } = require('../middleware')
 
 const router = express.Router()
 
@@ -30,7 +30,7 @@ router.post('/', [
     const token = await user.generateAuthToken()
     res.header('X-Auth', token).json({ user })
   }),
-  catchValidationError,
+  handleValidationError,
 ])
 
 router.post('/login', [

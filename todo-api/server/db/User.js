@@ -7,16 +7,16 @@ const isEmail = require('validator/lib/isEmail')
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
-    required: true,
+    required: [true, 'Email is required'],
     trim: true,
     lowercase: true,
     unique: true,
-    validate: isEmail,
+    validate: [isEmail, 'Email must be valid'],
   },
   password: {
     type: String,
-    required: true,
-    minlength: 6,
+    required: [true, 'Password is required'],
+    minlength: [6, 'Password must be at least 6 characters long'],
   },
   tokens: [
     {
@@ -34,7 +34,7 @@ const userSchema = new mongoose.Schema({
   ],
 })
 
-userSchema.plugin(uniqueValidator)
+userSchema.plugin(uniqueValidator, { message: 'Email is already in use' })
 
 userSchema.statics.findByCredentials = async function(email, password) {
   const User = this

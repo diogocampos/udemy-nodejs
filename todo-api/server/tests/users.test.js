@@ -6,7 +6,7 @@ const User = require('../db/User')
 const fixtures = require('./fixtures')
 const { pojo, requiresAuthentication } = require('./helpers')
 
-const { objectContaining, stringMatching } = expect
+const { any, objectContaining, stringMatching } = expect
 
 const OBJECT_ID = /^[0-9a-f]{24}$/
 const BCRYPT_HASH = /^\$2a\$10\$.{53}$/
@@ -68,13 +68,13 @@ describe('POST /users', () => {
     it('checks if email is invalid', async () => {
       const body = { email: 'foo', password: '12345678' }
       const res = await req(body).expect(400)
-      expect(res.body.errors.email).toBeDefined()
+      expect(res.body).toEqual({ errors: { email: any(String) } })
     })
 
     it('checks if password is too short', async () => {
       const body = { email: 'foo@bar.com', password: '12345' }
       const res = await req(body).expect(400)
-      expect(res.body.errors.password).toBeDefined()
+      expect(res.body).toEqual({ errors: { password: any(String) } })
     })
 
     it('checks if email is already in use', async () => {
@@ -83,7 +83,7 @@ describe('POST /users', () => {
         password: '12345678',
       }
       const res = await req(body).expect(400)
-      expect(res.body.errors.email).toBeDefined()
+      expect(res.body).toEqual({ errors: { email: any(String) } })
     })
   })
 })

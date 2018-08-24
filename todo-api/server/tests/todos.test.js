@@ -61,7 +61,7 @@ describe('POST /todos', () => {
 
     it('checks if title is missing', async () => {
       const res = await req({}).expect(400)
-      expect(res.body.errors.title).toBeDefined()
+      expect(res.body).toEqual({ errors: { title: any(String) } })
     })
   })
 })

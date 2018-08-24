@@ -1,15 +1,17 @@
-exports.catchValidationError = (err, req, res, next) => {
-  if (err.name === 'ValidationError') return res.status(400).json(err)
+exports.handleValidationError = (err, req, res, next) => {
+  if (err.name === 'ValidationError') {
+    const errors = {}
+    for (const [field, { message }] of Object.entries(err.errors)) {
+      errors[field] = message
+    }
+    return res.status(400).json({ errors })
+  }
   /* istanbul ignore next */ next(err)
 }
 
-// TODO: use https://www.npmjs.com/package/statuses ?
-exports.notFound = sendStatus(404)
+const sendStatus = code => (req, res) => res.sendStatus(code)
 exports.unauthorized = sendStatus(401)
-
-function sendStatus(code) {
-  return (req, res) => res.sendStatus(code)
-}
+exports.notFound = sendStatus(404)
 
 exports.wrap = asyncHandler => {
   return async (req, res, next) => {
