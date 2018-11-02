@@ -72,7 +72,7 @@ function populator(model, items) {
   })
 
   items.populate = async () => {
-    await model.remove({})
+    await model.deleteMany({})
     await Promise.all(items.map(item => new model(item).save()))
   }
 
