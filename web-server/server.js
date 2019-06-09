@@ -39,7 +39,7 @@ function home(req, res) {
   })
 }
 
-function about(req, rest) {
+function about(req, res) {
   res.render('about', { pageTitle: 'About Page' })
 }
 
